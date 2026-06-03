@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>龍王開荒團｜大組12人時段統計班表</title>
+<style>
+:root{--bg:#f5f7fb;--line:#d8dee9;--text:#1f2937;--muted:#6b7280;--ok:#16a34a;--warn:#f59e0b;--bad:#ef4444}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;background:var(--bg);color:var(--text)}
+header{background:linear-gradient(90deg,#2f80ed,#00bcd4);color:#fff;padding:18px 22px;box-shadow:0 2px 10px #0002}
+header h1{margin:0;font-size:24px}header p{margin:6px 0 0;opacity:.92}
+main{padding:18px;max-width:1950px;margin:auto}
+.toolbar,.filter-panel,.panel{display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:white;border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:14px}
+button,input,select{font:inherit;border:1px solid var(--line);border-radius:10px;padding:9px 12px;background:white}
+button{cursor:pointer;background:#111827;color:white;border-color:#111827}.secondary{background:#fff;color:#111827}.danger{background:#ef4444;border-color:#ef4444}.green{background:#16a34a;border-color:#16a34a}
+input.mid{width:150px}input.small{width:90px}
+.table-wrap{overflow:auto;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 18px #0f172a0f}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:2550px}
+th,td{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:7px;text-align:center;white-space:nowrap}
+th{position:sticky;top:0;background:#fff7e6;z-index:4}th.day{background:#dffcff}th.time{font-size:12px}
+.sticky{position:sticky;background:#fff;z-index:3}.sticky-h{position:sticky;background:#fff7e6;z-index:5}
+.c-group{left:0;min-width:90px}.c-sub{left:90px;min-width:90px}.c-id{left:180px;min-width:130px}.c-char{left:310px;min-width:130px}.c-role{left:440px;min-width:120px}.c-pos{left:560px;min-width:110px}.c-lv{left:670px;min-width:70px}.c-dc{left:740px;min-width:90px}.c-note{left:830px;min-width:330px;text-align:left}
+td.c-note{white-space:normal}.checkbox{width:20px;height:20px;accent-color:#4b5563}
+.pill{display:inline-flex;border-radius:999px;padding:4px 10px;font-weight:700;font-size:13px}
+.role-黑騎士,.role-英雄,.role-聖騎士,.role-拳霸,.pos-力職{background:#fee2e2;color:#991b1b}
+.role-箭神,.role-神射手,.role-夜使者,.role-神槍手,.pos-敏職{background:#dcfce7;color:#166534}
+.role-神偷,.pos-敏職刀{background:#ccfbf1;color:#115e59}
+.role-火毒,.role-冰雷,.role-主教,.pos-法職{background:#e0e7ff;color:#3730a3}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;width:100%}
+.card{background:white;border:1px solid var(--line);border-radius:12px;padding:10px}.card b{display:block;margin-bottom:4px}.card span{display:block;color:var(--muted);font-size:13px;line-height:1.55}
+.ok{color:var(--ok)!important;font-weight:800}.warn{color:var(--warn)!important;font-weight:800}.bad{color:var(--bad)!important;font-weight:800}
+.slot-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:12px;margin:14px 0}.slot-card{background:#fff;border:1px solid var(--line);border-left:5px solid #93c5fd;border-radius:12px;padding:10px}
+.slot-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:5px}.badge{display:inline-flex;border:1px solid var(--line);border-radius:999px;padding:3px 8px;font-size:12px;background:#f9fafb}.complete{background:#dcfce7;border-color:#86efac;color:#166534;font-weight:800}
+.group-sep td{background:#eef6ff!important;height:34px;text-align:left;color:#1d4ed8;font-weight:800;border-top:3px solid #60a5fa;border-bottom:3px solid #60a5fa}
+.hint{font-size:13px;color:var(--muted);line-height:1.5;width:100%}
+@media(max-width:900px){main{padding:10px}.slot-summary{grid-template-columns:1fr}header h1{font-size:20px}}
+
+/* compact matrix version */
+main{max-width:1600px}
+table{min-width:1480px;font-size:13px}
+th,td{padding:4px 5px}
+th.time{font-size:11px;min-width:42px}
+.checkbox{width:16px;height:16px}
+.c-group{left:0;min-width:54px}.c-sub{left:54px;min-width:54px}.c-id{left:108px;min-width:90px}.c-char{left:198px;min-width:90px}.c-role{left:288px;min-width:76px}.c-pos{left:364px;min-width:76px}.c-lv{left:440px;min-width:42px}.c-dc{left:482px;min-width:46px}.c-note{left:528px;min-width:145px;text-align:left}
+.pill{padding:2px 6px;font-size:12px}
+td.c-note{max-width:145px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.overlap{font-weight:800;color:#1d4ed8;background:#eff6ff!important}
+.group-best{font-size:12px;color:#166534;font-weight:800}
+.slot-summary{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.slot-card{padding:8px}
+.badge{font-size:11px;padding:2px 6px}
+@media(max-width:1600px){
+  .table-wrap{overflow-x:auto}
+}
+
+
+/* remove overlap columns and compact note */
+table{min-width:1320px}
+.c-note{left:528px;min-width:46px;max-width:46px;text-align:center!important}
+td.c-note{max-width:46px;text-align:center!important;overflow:visible}
+.note-icon{font-size:16px;cursor:help}
+.best-list{margin-top:6px;padding-top:6px;border-top:1px dashed #d8dee9}
+.best-list span{display:block;font-size:12px;color:#374151}
+
+</style>
+</head>
+<body>
+<header>
+<h1>龍王開荒團｜6/4－6/10 緊湊成團班表</h1>
+<p>1個大組＝2個小組×6人；同一大組同一時段達 12/12 才標示「可成團」。職業定位含：力職、敏職、敏職(刀)、法職；下方清單改為緊湊時間矩陣；成團統計集中顯示在上方。</p>
+</header>
+<main>
+<section class="toolbar">
+<input id="gameIdInput" class="mid" placeholder="遊戲ID">
+<input id="charInput" class="mid" placeholder="角色名稱">
+<select id="roleInput" onchange="syncPositionInput()"></select>
+<select id="positionInput"></select>
+<input id="levelInput" class="small" type="number" min="1" placeholder="等級">
+<select id="dcInput"><option value="否">未入DC</option><option value="是">已入DC</option></select>
+<select id="groupInput"></select>
+<select id="subgroupInput"><option value="1">第1小組</option><option value="2">第2小組</option></select>
+<input id="noteInput" placeholder="備註：凌晨場需求可標註這裡" style="min-width:300px;flex:1">
+<button onclick="addRow()">新增成員</button>
+<button class="green" onclick="autoAssignGroups()">自動分組</button>
+<button class="secondary" onclick="exportCSV()">匯出 CSV</button>
+<button class="danger" onclick="clearAll()">清空勾選</button>
+</section>
+
+<section class="filter-panel">
+<b>篩選：</b>
+<select id="filterGroup" onchange="render()"></select>
+<select id="filterSubgroup" onchange="render()"><option value="">全部小組</option><option value="1">第1小組</option><option value="2">第2小組</option></select>
+<select id="filterRole" onchange="render()"></select>
+<select id="filterPosition" onchange="render()"></select>
+<select id="filterDC" onchange="render()"><option value="">全部DC狀態</option><option value="是">已入DC</option><option value="否">未入DC</option></select>
+<select id="filterDate" onchange="render()"></select>
+<input id="filterKeyword" placeholder="搜尋遊戲ID / 角色名稱 / 備註" oninput="render()" style="min-width:260px;flex:1">
+<button class="secondary" onclick="resetFilters()">清除篩選</button>
+<span style="font-size:13px;color:#6b7280">下方基本資料唯讀；修改資料請刪除後重新新增。</span>
+</section>
+
+<section class="panel">
+<div class="hint">分類：黑騎士、英雄、聖騎士、拳霸＝力職；箭神、神射手、夜使者、神槍手＝敏職；神偷＝敏職(刀)；火毒、冰雷、主教＝法職。</div>
+<div class="grid" id="groupSummary"></div>
+</section>
+
+<section class="slot-summary" id="slotSummary"></section>
+
+<section class="table-wrap">
+<table>
+<thead id="thead"></thead>
+<tbody id="tbody"></tbody>
+</table>
+</section>
+</main>
+
+<script>
+const days=["6/4 週四","6/5 週五","6/6 週六","6/7 週日","6/8 週一","6/9 週二","6/10 週三"];
+const slots=[{label:"早",full:"早上8點~12點"},{label:"午",full:"下午12點~17點"},{label:"晚",full:"晚上17點~24點"}];
+const roles=["黑騎士","英雄","聖騎士","拳霸","箭神","神射手","夜使者","神槍手","神偷","火毒","冰雷","主教"];
+const positions=["力職","敏職","敏職(刀)","法職"];
+const bigGroups=["A","B","C","D","E","F"];
+const subGroups=["1","2"];
+const rolePositionMap={
+ "黑騎士":"力職","英雄":"力職","聖騎士":"力職","拳霸":"力職",
+ "箭神":"敏職","神射手":"敏職","夜使者":"敏職","神槍手":"敏職",
+ "神偷":"敏職(刀)",
+ "火毒":"法職","冰雷":"法職","主教":"法職",
+ "龍騎士":"力職","十字軍":"力職","格鬥家":"力職","弩弓":"敏職","遊俠":"敏職","槍手":"敏職","祭司":"法職"
+};
+const migrate={"龍騎士":"黑騎士","十字軍":"英雄","格鬥家":"拳霸","弩弓":"神射手","遊俠":"箭神","槍手":"神槍手","祭司":"主教"};
+
+const defaultRows=[
+{group:"A",subgroup:"1",gameId:"",charName:"",role:"黑騎士",position:"力職",level:166,note:"W4優先，不方便的話W5也行",dc:"否",checks:[1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
+{group:"A",subgroup:"1",gameId:"",charName:"",role:"黑騎士",position:"力職",level:166,note:"6/4、6/6、6/7可；6/9、6/10暫可",dc:"否",checks:[0,0,1,0,0,0,0,0,1,0,0,1,0,0,0,0,0,1,0,0,1]},
+{group:"A",subgroup:"1",gameId:"",charName:"",role:"神射手",position:"敏職",level:163,note:"平日九點開始，假日可安排",dc:"否",checks:[0,0,1,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0]},
+{group:"A",subgroup:"1",gameId:"",charName:"",role:"火毒",position:"法職",level:162,note:"",dc:"否",checks:[0,0,1,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0]},
+{group:"A",subgroup:"1",gameId:"",charName:"",role:"黑騎士",position:"力職",level:165,note:"平日九點開始，假日可安排",dc:"否",checks:[0,0,1,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1]},
+{group:"A",subgroup:"1",gameId:"",charName:"",role:"神槍手",position:"敏職",level:167,note:"平日九點開始，假日可安排",dc:"否",checks:[0,0,1,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0]},
+{group:"A",subgroup:"2",gameId:"",charName:"",role:"箭神",position:"敏職",level:170,note:"週四21:00後，週五20:00後，其餘19:00後",dc:"否",checks:[0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,0]},
+{group:"A",subgroup:"2",gameId:"",charName:"",role:"拳霸",position:"力職",level:150,note:"晚上七點半後",dc:"否",checks:[0,0,1,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0]},
+{group:"A",subgroup:"2",gameId:"",charName:"",role:"神偷",position:"敏職(刀)",level:165,note:"若要拚1900後可以，若要分2天2100後可以",dc:"否",checks:[0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,1]},
+{group:"A",subgroup:"2",gameId:"",charName:"",role:"主教",position:"法職",level:173,note:"星期五晚上1930後",dc:"否",checks:[0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
+{group:"A",subgroup:"2",gameId:"",charName:"",role:"神槍手",position:"敏職",level:173,note:"",dc:"否",checks:[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]},
+{group:"A",subgroup:"2",gameId:"",charName:"",role:"冰雷",position:"法職",level:172,note:"晚上5點後",dc:"否",checks:[0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1,0,0,1]},
+{group:"B",subgroup:"1",gameId:"",charName:"",role:"黑騎士",position:"力職",level:161,note:"晚上9點後",dc:"否",checks:[0,0,1,0,0,1,0,0,1,0,0,0,0,0,1,0,0,1,0,0,1]},
+{group:"B",subgroup:"1",gameId:"",charName:"",role:"英雄",position:"力職",level:172,note:"平日晚上20:00後，週末全天",dc:"否",checks:[0,0,1,0,0,1,1,1,1,1,1,1,0,0,1,0,0,1,0,0,1]},
+{group:"B",subgroup:"1",gameId:"",charName:"",role:"冰雷",position:"法職",level:166,note:"晚上9點後",dc:"否",checks:[0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0]},
+{group:"B",subgroup:"1",gameId:"",charName:"",role:"火毒",position:"法職",level:170,note:"平日20:00",dc:"否",checks:[0,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0]}
+];
+
+function cleanRole(r){return migrate[r]||roles.includes(r)?(migrate[r]||r):"黑騎士"}
+function normalize(list){return list.map((r,i)=>{let role=cleanRole(r.role||"黑騎士");return{group:r.group||String.fromCharCode(65+Math.floor(i/12)),subgroup:r.subgroup||String(Math.floor((i%12)/6)+1),gameId:r.gameId||"",charName:r.charName||"",role,position:rolePositionMap[role]||r.position||"力職",level:r.level||"",note:r.note||"",dc:r.dc||"否",checks:Array.from({length:21},(_,j)=>r.checks?.[j]?1:0)}})}
+let rows=normalize(JSON.parse(localStorage.getItem("dragonScheduleRowsV6")||"null")||JSON.parse(localStorage.getItem("dragonScheduleRowsV5")||"null")||JSON.parse(localStorage.getItem("dragonScheduleRowsV4")||"null")||defaultRows);
+
+function save(){localStorage.setItem("dragonScheduleRowsV6",JSON.stringify(rows));updateGroupSummary();updateSlotSummary()}
+function opts(arr,lab=x=>x){return arr.map(x=>`<option value="${x}">${lab(x)}</option>`).join("")}
+function init(){
+ roleInput.innerHTML=opts(roles); positionInput.innerHTML=opts(positions); groupInput.innerHTML=opts(bigGroups,g=>g+"大組");
+ filterGroup.innerHTML='<option value="">全部大組</option>'+opts(bigGroups,g=>g+"大組");
+ filterRole.innerHTML='<option value="">全部職業</option>'+opts(roles);
+ filterPosition.innerHTML='<option value="">全部職業定位</option>'+opts(positions);
+ filterDate.innerHTML='<option value="">全部日期</option>'+days.map((d,i)=>`<option value="${i}">${d} 有勾選</option>`).join("");
+ syncPositionInput(); render();
+}
+function syncPositionInput(){positionInput.value=rolePositionMap[roleInput.value]||"力職"}
+function buildHead(){
+ thead.innerHTML=`<tr>
+ <th class="sticky-h c-group" rowspan="2">大</th><th class="sticky-h c-sub" rowspan="2">小</th><th class="sticky-h c-id" rowspan="2">遊戲ID</th><th class="sticky-h c-char" rowspan="2">角色</th><th class="sticky-h c-role" rowspan="2">職業</th><th class="sticky-h c-pos" rowspan="2">定位</th><th class="sticky-h c-lv" rowspan="2">Lv</th><th class="sticky-h c-dc" rowspan="2">DC</th><th class="sticky-h c-note" rowspan="2">備</th>
+ ${days.map(d=>`<th class="day" colspan="3">${d.replace(" 週","<br>週")}</th>`).join("")}
+ <th rowspan="2">操作</th></tr>
+ <tr>${days.map(()=>slots.map(s=>`<th class="time">${s.label}</th>`).join("")).join("")}</tr>`;
+}
+function selectHTML(arr,val,onchange,lab=x=>x){return `<select onchange="${onchange}">${arr.map(x=>`<option value="${x}" ${x==val?"selected":""}>${lab(x)}</option>`).join("")}</select>`}
+function filtered(){
+ const g=filterGroup.value,sg=filterSubgroup.value,role=filterRole.value,pos=filterPosition.value,dc=filterDC.value,date=filterDate.value,kw=filterKeyword.value.trim().toLowerCase();
+ return rows.map((r,idx)=>({r,idx})).filter(({r})=>{
+  if(g&&r.group!==g)return false;if(sg&&r.subgroup!==sg)return false;if(role&&r.role!==role)return false;if(pos&&r.position!==pos)return false;if(dc&&r.dc!==dc)return false;
+  if(date!=="" && ![0,1,2].some(si=>r.checks[Number(date)*3+si]))return false;
+  if(kw&&!`${r.gameId} ${r.charName} ${r.note}`.toLowerCase().includes(kw))return false;return true;
+ }).sort((a,b)=>bigGroups.indexOf(a.r.group)-bigGroups.indexOf(b.r.group)||Number(a.r.subgroup)-Number(b.r.subgroup)||a.idx-b.idx)
+}
+
+function availableCount(r){
+  return r.checks.filter(Boolean).length;
+}
+function groupSlotCounts(group){
+  return Array.from({length:21},(_,i)=>rows.filter(r=>r.group===group && r.checks[i]).length);
+}
+function bestGroupOverlap(r){
+  const counts = groupSlotCounts(r.group);
+  let best = 0, bestIdx = -1;
+  counts.forEach((c,i)=>{ if(r.checks[i] && c > best){ best = c; bestIdx = i; } });
+  if(bestIdx < 0) return {text:"-", count:0};
+  const d = days[Math.floor(bestIdx/3)].split(" ")[0];
+  const s = slots[bestIdx%3].label;
+  return {text:`${d}${s} ${best}/12`, count:best};
+}
+
+function render(){
+ buildHead(); tbody.innerHTML=""; let last="";
+ filtered().forEach(({r,idx})=>{
+  if(r.group!==last){let sep=document.createElement("tr");sep.className="group-sep";sep.innerHTML=`<td colspan="32">${r.group}大組</td>`;tbody.appendChild(sep);last=r.group}
+  let tr=document.createElement("tr");
+  const noteIcon = r.note ? `<span class="note-icon" title="${escapeHtml(r.note)}">📝</span>` : "";
+  tr.innerHTML=`<td class="sticky c-group">${r.group}</td>
+  <td class="sticky c-sub">${r.subgroup}</td>
+  <td class="sticky c-id">${r.gameId}</td>
+  <td class="sticky c-char">${r.charName}</td>
+  <td class="sticky c-role"><span class="pill role-${r.role}">${r.role}</span></td>
+  <td class="sticky c-pos"><span class="pill ${posClass(r.position)}">${r.position}</span></td>
+  <td class="sticky c-lv">${r.level}</td>
+  <td class="sticky c-dc">${r.dc}</td>
+  <td class="sticky c-note">${noteIcon}</td>
+  ${Array.from({length:21},(_,i)=>{
+    const gCount = rows.filter(x=>x.group===r.group && x.checks[i]).length;
+    const hl = r.checks[i] && gCount>=12 ? "complete" : "";
+    return `<td class="${hl}"><input class="checkbox" type="checkbox" ${r.checks[i]?"checked":""} title="同大組 ${gCount}/12" onchange="toggle(${idx},${i},this.checked)"></td>`;
+  }).join("")}
+  <td><button class="secondary" onclick="removeRow(${idx})">刪除</button></td>`;
+  tbody.appendChild(tr);
+ });
+ updateGroupSummary(); updateSlotSummary();
+}
+function escapeHtml(str){
+  return String(str||"").replaceAll("&","&amp;").replaceAll('"',"&quot;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+}
+function posClass(p){return p==="敏職(刀)"?"pos-敏職刀":"pos-"+p}
+function edit(i,f,v){rows[i][f]=String(v).trim();save()}
+function editRole(i,role){rows[i].role=role;rows[i].position=rolePositionMap[role]||"力職";save();render()}
+function toggle(i,j,v){rows[i].checks[j]=v?1:0;save()}
+function addRow(){let role=roleInput.value;rows.push({group:groupInput.value,subgroup:subgroupInput.value,gameId:gameIdInput.value.trim(),charName:charInput.value.trim(),role,position:positionInput.value,level:levelInput.value.trim(),note:noteInput.value.trim(),dc:dcInput.value,checks:Array(21).fill(0)});["gameIdInput","charInput","levelInput","noteInput"].forEach(id=>document.getElementById(id).value="");render();save()}
+function removeRow(i){rows.splice(i,1);render();save()}
+function clearAll(){if(confirm("確定清空所有勾選？")){rows.forEach(r=>r.checks=Array(21).fill(0));render();save()}}
+function resetFilters(){["filterGroup","filterSubgroup","filterRole","filterPosition","filterDC","filterDate","filterKeyword"].forEach(id=>document.getElementById(id).value="");render()}
+function autoAssignGroups(){rows.forEach((r,i)=>{r.group=bigGroups[Math.floor(i/12)]||"F";r.subgroup=String(Math.floor((i%12)/6)+1)});render();save()}
+function updateGroupSummary(){
+ groupSummary.innerHTML=bigGroups.filter(g=>rows.some(r=>r.group===g)).map(g=>{
+  let ms=rows.filter(r=>r.group===g), posCount=Object.fromEntries(positions.map(p=>[p,ms.filter(m=>m.position===p).length]));
+  let roleText=roles.filter(role=>ms.some(m=>m.role===role)).map(role=>`${role} ${ms.filter(m=>m.role===role).length}`).join("｜")||"尚無成員";
+  let subText=subGroups.map(s=>{let m=ms.filter(x=>x.subgroup===s);let cls=m.length===6?"ok":m.length>6?"bad":"warn";return `<span>第${s}小組：<span class="${cls}">${m.length}/6</span>｜${m.map(x=>x.role).join("、")||"尚無"}</span>`}).join("");
+  return `<div class="card"><b>${g}大組總和｜${ms.length}/12</b><span>力職 ${posCount["力職"]}｜敏職 ${posCount["敏職"]}｜敏職(刀) ${posCount["敏職(刀)"]}｜法職 ${posCount["法職"]}</span><span>${roleText}</span>${subText}</div>`
+ }).join("");
+}
+function updateSlotSummary(){
+ slotSummary.innerHTML=days.map((d,di)=>{
+  let rowsHtml=slots.map((s,si)=>{
+   let idx=di*3+si;
+   let badges=bigGroups.filter(g=>rows.some(r=>r.group===g)).map(g=>{
+    let members=rows.filter(r=>r.group===g);
+    let count=members.filter(r=>r.checks[idx]).length;
+    let cls=count>=12?"complete":"";
+    let txt=count>=12?`${g}大組 ${count}/12 可成團`:`${g}大組 ${count}/12`;
+    return `<span class="badge ${cls}">${txt}</span>`;
+   }).join("");
+   return `<div><b>${s.full||s.label}</b><div class="slot-row">${badges}</div></div>`;
+  }).join("");
+
+  const best = bigGroups.filter(g=>rows.some(r=>r.group===g)).map(g=>{
+    let bestIdx=-1,bestCount=-1;
+    for(let si=0;si<3;si++){
+      let idx=di*3+si;
+      let count=rows.filter(r=>r.group===g && r.checks[idx]).length;
+      if(count>bestCount){bestCount=count;bestIdx=si;}
+    }
+    const cls = bestCount>=12 ? "ok" : bestCount>=9 ? "warn" : "";
+    return `<span class="${cls}">${g}大組最佳：${slots[bestIdx].full||slots[bestIdx].label} ${bestCount}/12</span>`;
+  }).join("");
+
+  return `<div class="slot-card"><b>${d}</b>${rowsHtml}<div class="best-list">${best}</div></div>`;
+ }).join("");
+}
+function exportCSV(){
+ let headers=["大組","小組","遊戲ID","角色名稱","職業","職業定位","等級","是否已入DC","備註"];days.forEach(d=>slots.forEach(s=>headers.push(d+" "+(s.full||s.label))));
+ let lines=[headers.join(",")];rows.forEach(r=>lines.push([r.group,r.subgroup,r.gameId,r.charName,r.role,r.position,r.level,r.dc,`"${(r.note||"").replaceAll('"','""')}"`,...r.checks.map(v=>v?"可":"")].join(",")));
+ let blob=new Blob(["\ufeff"+lines.join("\n")],{type:"text/csv;charset=utf-8"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="dragon_schedule_12person_group_slots.csv";a.click();URL.revokeObjectURL(url);
+}
+init();
+</script>
+</body>
+</html>
