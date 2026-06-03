@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>龍王開荒團｜大組12人時段統計班表</title>
+<title>闇黑龍王團班表｜大組12人時段統計班表</title>
 <style>
 :root{--bg:#f5f7fb;--line:#d8dee9;--text:#1f2937;--muted:#6b7280;--ok:#16a34a;--warn:#f59e0b;--bad:#ef4444}
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;background:var(--bg);color:var(--text)}
@@ -41,7 +41,7 @@ table{min-width:1480px;font-size:13px}
 th,td{padding:4px 5px}
 th.time{font-size:11px;min-width:42px}
 .checkbox{width:16px;height:16px}
-.c-group{left:0;min-width:54px}.c-sub{left:54px;min-width:54px}.c-id{left:108px;min-width:90px}.c-char{left:198px;min-width:90px}.c-role{left:288px;min-width:76px}.c-pos{left:364px;min-width:76px}.c-lv{left:440px;min-width:42px}.c-dc{left:482px;min-width:46px}.c-note{left:528px;min-width:145px;text-align:left}
+.c-drag{left:0;min-width:36px}.c-group{left:36px;min-width:54px}.c-sub{left:90px;min-width:54px}.c-id{left:144px;min-width:90px}.c-char{left:234px;min-width:90px}.c-role{left:324px;min-width:76px}.c-pos{left:400px;min-width:76px}.c-lv{left:476px;min-width:42px}.c-dc{left:518px;min-width:46px}.c-note{left:528px;min-width:145px;text-align:left}
 .pill{padding:2px 6px;font-size:12px}
 td.c-note{max-width:145px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .overlap{font-weight:800;color:#1d4ed8;background:#eff6ff!important}
@@ -55,19 +55,133 @@ td.c-note{max-width:145px;overflow:hidden;text-overflow:ellipsis;white-space:now
 
 
 /* remove overlap columns and compact note */
-table{min-width:1320px}
-.c-note{left:528px;min-width:46px;max-width:46px;text-align:center!important}
+table{min-width:1520px}
+.c-note{left:564px;min-width:46px;max-width:46px;text-align:center!important}
 td.c-note{max-width:46px;text-align:center!important;overflow:visible}
 .note-icon{font-size:16px;cursor:help}
 .best-list{margin-top:6px;padding-top:6px;border-top:1px dashed #d8dee9}
 .best-list span{display:block;font-size:12px;color:#374151}
 
+
+/* date color blocks + stronger date separators + pinned two-row header */
+thead tr:first-child th{
+  top:0;
+  height:36px;
+}
+thead tr:nth-child(2) th{
+  top:36px;
+  z-index:4;
+}
+th.sticky-h{
+  top:0!important;
+}
+.date-0{background:#e0f2fe!important}
+.date-1{background:#dcfce7!important}
+.date-2{background:#fef3c7!important}
+.date-3{background:#ffe4e6!important}
+.date-4{background:#ede9fe!important}
+.date-5{background:#ffedd5!important}
+.date-6{background:#e2e8f0!important}
+.day-end{
+  border-right:4px solid #2563eb!important;
+}
+.weekend-end{
+  border-right:4px solid #dc2626!important;
+}
+.weekend-day{
+  background:#ffe4e6!important;
+}
+tbody td.date-0{background:#f0f9ff}
+tbody td.date-1{background:#f0fdf4}
+tbody td.date-2{background:#fffbeb}
+tbody td.date-3{background:#fff1f2}
+tbody td.date-4{background:#f5f3ff}
+tbody td.date-5{background:#fff7ed}
+tbody td.date-6{background:#f8fafc}
+tbody td.complete{
+  background:#dcfce7!important;
+}
+.table-wrap{
+  max-height:72vh;
+}
+
+
+/* subgroup color + corrected 6/6 Saturday color */
+.subgroup-1{
+  background:#ecfeff!important;
+  color:#155e75!important;
+  font-weight:800;
+}
+.subgroup-2{
+  background:#fef3c7!important;
+  color:#92400e!important;
+  font-weight:800;
+}
+th.date-2{
+  background:#fee2e2!important;
+}
+tbody td.date-2{
+  background:#fff1f2!important;
+}
+
+
+/* drag to move member between groups */
+.drag-handle{
+  cursor:grab;
+  user-select:none;
+  font-size:16px;
+  color:#64748b;
+}
+tr.member-row[draggable="true"]{
+  cursor:grab;
+}
+tr.member-row.dragging{
+  opacity:.45;
+  outline:2px dashed #2563eb;
+}
+.group-sep{
+  cursor:pointer;
+}
+.group-sep.drag-over td{
+  background:#bfdbfe!important;
+  color:#1e3a8a!important;
+}
+.drop-hint{
+  font-size:12px;
+  color:#2563eb;
+  margin-left:8px;
+}
+
+
+/* quick move controls */
+.move-box{
+  display:flex;
+  gap:4px;
+  align-items:center;
+  justify-content:center;
+  white-space:nowrap;
+}
+.move-box select{
+  padding:3px 5px;
+  font-size:12px;
+  border-radius:7px;
+}
+.move-box button{
+  padding:3px 7px;
+  font-size:12px;
+  border-radius:7px;
+}
+.quick-move-hint{
+  color:#2563eb;
+  font-weight:700;
+}
+
 </style>
 </head>
 <body>
 <header>
-<h1>龍王開荒團｜6/4－6/10 緊湊成團班表</h1>
-<p>1個大組＝2個小組×6人；同一大組同一時段達 12/12 才標示「可成團」。職業定位含：力職、敏職、敏職(刀)、法職；下方清單改為緊湊時間矩陣；成團統計集中顯示在上方。</p>
+<h1>闇黑龍王團班表｜6/4－6/10 快速換組固定表頭班表</h1>
+<p>1個大組＝2個小組×6人；同一大組同一時段達 12/12 才標示「可成團」。職業定位含：力職、敏職、敏職(刀)、法職；下方清單小組1/2已用顏色區分；可拖曳成員列調整大組與小組，也可用右側快速換組。時段為早上8–12、下午12–18、晚上18–24。</p>
 </header>
 <main>
 <section class="toolbar">
@@ -81,7 +195,6 @@ td.c-note{max-width:46px;text-align:center!important;overflow:visible}
 <select id="subgroupInput"><option value="1">第1小組</option><option value="2">第2小組</option></select>
 <input id="noteInput" placeholder="備註：凌晨場需求可標註這裡" style="min-width:300px;flex:1">
 <button onclick="addRow()">新增成員</button>
-<button class="green" onclick="autoAssignGroups()">自動分組</button>
 <button class="secondary" onclick="exportCSV()">匯出 CSV</button>
 <button class="danger" onclick="clearAll()">清空勾選</button>
 </section>
@@ -96,7 +209,7 @@ td.c-note{max-width:46px;text-align:center!important;overflow:visible}
 <select id="filterDate" onchange="render()"></select>
 <input id="filterKeyword" placeholder="搜尋遊戲ID / 角色名稱 / 備註" oninput="render()" style="min-width:260px;flex:1">
 <button class="secondary" onclick="resetFilters()">清除篩選</button>
-<span style="font-size:13px;color:#6b7280">下方基本資料唯讀；修改資料請刪除後重新新增。</span>
+<span style="font-size:13px;color:#6b7280">下方基本資料唯讀；可拖曳換組；距離太遠時用右側 <span class="quick-move-hint">快速換組</span>。</span>
 </section>
 
 <section class="panel">
@@ -116,7 +229,7 @@ td.c-note{max-width:46px;text-align:center!important;overflow:visible}
 
 <script>
 const days=["6/4 週四","6/5 週五","6/6 週六","6/7 週日","6/8 週一","6/9 週二","6/10 週三"];
-const slots=[{label:"早",full:"早上8點~12點"},{label:"午",full:"下午12點~17點"},{label:"晚",full:"晚上17點~24點"}];
+const slots=[{label:"早",full:"早上8點~12點"},{label:"午",full:"下午12點~18點"},{label:"晚",full:"晚上18點~24點"}];
 const roles=["黑騎士","英雄","聖騎士","拳霸","箭神","神射手","夜使者","神槍手","神偷","火毒","冰雷","主教"];
 const positions=["力職","敏職","敏職(刀)","法職"];
 const bigGroups=["A","B","C","D","E","F"];
@@ -166,10 +279,10 @@ function init(){
 function syncPositionInput(){positionInput.value=rolePositionMap[roleInput.value]||"力職"}
 function buildHead(){
  thead.innerHTML=`<tr>
- <th class="sticky-h c-group" rowspan="2">大</th><th class="sticky-h c-sub" rowspan="2">小</th><th class="sticky-h c-id" rowspan="2">遊戲ID</th><th class="sticky-h c-char" rowspan="2">角色</th><th class="sticky-h c-role" rowspan="2">職業</th><th class="sticky-h c-pos" rowspan="2">定位</th><th class="sticky-h c-lv" rowspan="2">Lv</th><th class="sticky-h c-dc" rowspan="2">DC</th><th class="sticky-h c-note" rowspan="2">備</th>
- ${days.map(d=>`<th class="day" colspan="3">${d.replace(" 週","<br>週")}</th>`).join("")}
- <th rowspan="2">操作</th></tr>
- <tr>${days.map(()=>slots.map(s=>`<th class="time">${s.label}</th>`).join("")).join("")}</tr>`;
+ <th class="sticky-h c-drag" rowspan="2">拖</th><th class="sticky-h c-group" rowspan="2">大</th><th class="sticky-h c-sub" rowspan="2">小</th><th class="sticky-h c-id" rowspan="2">遊戲ID</th><th class="sticky-h c-char" rowspan="2">角色</th><th class="sticky-h c-role" rowspan="2">職業</th><th class="sticky-h c-pos" rowspan="2">定位</th><th class="sticky-h c-lv" rowspan="2">Lv</th><th class="sticky-h c-dc" rowspan="2">DC</th><th class="sticky-h c-note" rowspan="2">備</th>
+ ${days.map((d,di)=>`<th class="day date-${di} ${di===2||di===3?'weekend-day':''} ${di===2||di===3?'weekend-end':'day-end'}" colspan="3">${d.replace(" 週","<br>週")}</th>`).join("")}
+ <th rowspan="2">快速換組 / 操作</th></tr>
+ <tr>${days.map((d,di)=>slots.map((s,si)=>`<th class="time date-${di} ${si===2?(di===2||di===3?'weekend-end':'day-end'):''}">${s.label}</th>`).join("")).join("")}</tr>`;
 }
 function selectHTML(arr,val,onchange,lab=x=>x){return `<select onchange="${onchange}">${arr.map(x=>`<option value="${x}" ${x==val?"selected":""}>${lab(x)}</option>`).join("")}</select>`}
 function filtered(){
@@ -197,14 +310,70 @@ function bestGroupOverlap(r){
   return {text:`${d}${s} ${best}/12`, count:best};
 }
 
+
+function quickMoveHTML(idx, r){
+  return `<div class="move-box">
+    <select id="moveG_${idx}">${bigGroups.map(g=>`<option value="${g}" ${g===r.group?"selected":""}>${g}</option>`).join("")}</select>
+    <select id="moveS_${idx}">${subGroups.map(s=>`<option value="${s}" ${s===r.subgroup?"selected":""}>${s}</option>`).join("")}</select>
+    <button class="secondary" onclick="quickMove(${idx})">移動</button>
+    <button class="secondary" onclick="removeRow(${idx})">刪除</button>
+  </div>`;
+}
+function quickMove(idx){
+  const g = document.getElementById(`moveG_${idx}`)?.value;
+  const s = document.getElementById(`moveS_${idx}`)?.value;
+  if(!g || !s || !rows[idx]) return;
+  rows[idx].group = g;
+  rows[idx].subgroup = s;
+  save();
+  render();
+}
+
 function render(){
- buildHead(); tbody.innerHTML=""; let last="";
- filtered().forEach(({r,idx})=>{
-  if(r.group!==last){let sep=document.createElement("tr");sep.className="group-sep";sep.innerHTML=`<td colspan="32">${r.group}大組</td>`;tbody.appendChild(sep);last=r.group}
+ buildHead(); tbody.innerHTML=""; let lastGroup="", lastSub="";
+ const list = filtered();
+ list.forEach(({r,idx})=>{
+  if(r.group!==lastGroup){
+    let sep=document.createElement("tr");
+    sep.className="group-sep";
+    sep.dataset.group=r.group;
+    sep.dataset.subgroup="1";
+    sep.innerHTML=`<td colspan="33">${r.group}大組 <span class="drop-hint">拖曳到此可移入 ${r.group}大組第1小組</span></td>`;
+    addDropEvents(sep, r.group, "1");
+    tbody.appendChild(sep);
+    lastGroup=r.group;
+    lastSub="";
+  }
+  if(r.subgroup!==lastSub){
+    let subSep=document.createElement("tr");
+    subSep.className="group-sep";
+    subSep.dataset.group=r.group;
+    subSep.dataset.subgroup=r.subgroup;
+    subSep.innerHTML=`<td colspan="33">${r.group}大組｜第${r.subgroup}小組 <span class="drop-hint">拖曳成員到這裡換到此小組</span></td>`;
+    addDropEvents(subSep, r.group, r.subgroup);
+    tbody.appendChild(subSep);
+    lastSub=r.subgroup;
+  }
+
   let tr=document.createElement("tr");
+  tr.className="member-row";
+  tr.draggable=true;
+  tr.dataset.index=idx;
+  tr.addEventListener("dragstart", e=>{
+    draggedIndex=idx;
+    tr.classList.add("dragging");
+    e.dataTransfer.effectAllowed="move";
+  });
+  tr.addEventListener("dragend", ()=>{
+    draggedIndex=null;
+    tr.classList.remove("dragging");
+    document.querySelectorAll(".drag-over").forEach(el=>el.classList.remove("drag-over"));
+  });
+
   const noteIcon = r.note ? `<span class="note-icon" title="${escapeHtml(r.note)}">📝</span>` : "";
-  tr.innerHTML=`<td class="sticky c-group">${r.group}</td>
-  <td class="sticky c-sub">${r.subgroup}</td>
+  tr.innerHTML=`<td class="sticky c-drag"><span class="drag-handle" title="拖曳換組">☰</span></td>
+  <td class="sticky c-group">${r.group}</td>
+  <td class="sticky c-sub subgroup-${r.subgroup}">${r.subgroup}</td>
   <td class="sticky c-id">${r.gameId}</td>
   <td class="sticky c-char">${r.charName}</td>
   <td class="sticky c-role"><span class="pill role-${r.role}">${r.role}</span></td>
@@ -214,10 +383,13 @@ function render(){
   <td class="sticky c-note">${noteIcon}</td>
   ${Array.from({length:21},(_,i)=>{
     const gCount = rows.filter(x=>x.group===r.group && x.checks[i]).length;
+    const di = Math.floor(i/3);
+    const si = i%3;
     const hl = r.checks[i] && gCount>=12 ? "complete" : "";
-    return `<td class="${hl}"><input class="checkbox" type="checkbox" ${r.checks[i]?"checked":""} title="同大組 ${gCount}/12" onchange="toggle(${idx},${i},this.checked)"></td>`;
+    const sep = si===2 ? (di===2||di===3 ? "weekend-end" : "day-end") : "";
+    return `<td class="date-${di} ${sep} ${hl}"><input class="checkbox" type="checkbox" ${r.checks[i]?"checked":""} title="同大組 ${gCount}/12" onchange="toggle(${idx},${i},this.checked)"></td>`;
   }).join("")}
-  <td><button class="secondary" onclick="removeRow(${idx})">刪除</button></td>`;
+  <td>${quickMoveHTML(idx, r)}</td>`;
   tbody.appendChild(tr);
  });
  updateGroupSummary(); updateSlotSummary();
@@ -270,6 +442,27 @@ function updateSlotSummary(){
   return `<div class="slot-card"><b>${d}</b>${rowsHtml}<div class="best-list">${best}</div></div>`;
  }).join("");
 }
+
+let draggedIndex = null;
+function addDropEvents(el, group, subgroup){
+  el.addEventListener("dragover", e=>{
+    e.preventDefault();
+    el.classList.add("drag-over");
+  });
+  el.addEventListener("dragleave", ()=>{
+    el.classList.remove("drag-over");
+  });
+  el.addEventListener("drop", e=>{
+    e.preventDefault();
+    el.classList.remove("drag-over");
+    if(draggedIndex === null || !rows[draggedIndex]) return;
+    rows[draggedIndex].group = group;
+    rows[draggedIndex].subgroup = subgroup;
+    save();
+    render();
+  });
+}
+
 function exportCSV(){
  let headers=["大組","小組","遊戲ID","角色名稱","職業","職業定位","等級","是否已入DC","備註"];days.forEach(d=>slots.forEach(s=>headers.push(d+" "+(s.full||s.label))));
  let lines=[headers.join(",")];rows.forEach(r=>lines.push([r.group,r.subgroup,r.gameId,r.charName,r.role,r.position,r.level,r.dc,`"${(r.note||"").replaceAll('"','""')}"`,...r.checks.map(v=>v?"可":"")].join(",")));
