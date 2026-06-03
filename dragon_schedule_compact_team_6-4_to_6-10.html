@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>闇黑龍王團班表｜大組12人時段統計班表</title>
+<title>龍王開荒團｜大組12人時段統計班表</title>
 <style>
 :root{--bg:#f5f7fb;--line:#d8dee9;--text:#1f2937;--muted:#6b7280;--ok:#16a34a;--warn:#f59e0b;--bad:#ef4444}
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif;background:var(--bg);color:var(--text)}
@@ -180,7 +180,7 @@ tr.member-row.dragging{
 </head>
 <body>
 <header>
-<h1>闇黑龍王團班表｜6/4－6/10 快速換組固定表頭班表</h1>
+<h1>龍王開荒團｜6/4－6/10 快速換組固定表頭班表</h1>
 <p>1個大組＝2個小組×6人；同一大組同一時段達 12/12 才標示「可成團」。職業定位含：力職、敏職、敏職(刀)、法職；下方清單小組1/2已用顏色區分；可拖曳成員列調整大組與小組，也可用右側快速換組。時段為早上8–12、下午12–18、晚上18–24。</p>
 </header>
 <main>
@@ -228,6 +228,7 @@ tr.member-row.dragging{
 </main>
 
 <script>
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx9jkTknQHAQN0Y3wJA1QY-HlADjfet0Gwh8-ggH7m3Mdf1eYNLjGXxBBTkIPJ7nm9-/exec";
 const days=["6/4 週四","6/5 週五","6/6 週六","6/7 週日","6/8 週一","6/9 週二","6/10 週三"];
 const slots=[{label:"早",full:"早上8點~12點"},{label:"午",full:"下午12點~18點"},{label:"晚",full:"晚上18點~24點"}];
 const roles=["黑騎士","英雄","聖騎士","拳霸","箭神","神射手","夜使者","神槍手","神偷","火毒","冰雷","主教"];
@@ -401,7 +402,39 @@ function posClass(p){return p==="敏職(刀)"?"pos-敏職刀":"pos-"+p}
 function edit(i,f,v){rows[i][f]=String(v).trim();save()}
 function editRole(i,role){rows[i].role=role;rows[i].position=rolePositionMap[role]||"力職";save();render()}
 function toggle(i,j,v){rows[i].checks[j]=v?1:0;save()}
-function addRow(){let role=roleInput.value;rows.push({group:groupInput.value,subgroup:subgroupInput.value,gameId:gameIdInput.value.trim(),charName:charInput.value.trim(),role,position:positionInput.value,level:levelInput.value.trim(),note:noteInput.value.trim(),dc:dcInput.value,checks:Array(21).fill(0)});["gameIdInput","charInput","levelInput","noteInput"].forEach(id=>document.getElementById(id).value="");render();save()}
+async function submitNewMemberToSheets(row){
+  if(!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("貼上")) return;
+  const payload = {
+    action: "add_member",
+    group: row.group,
+    subgroup: row.subgroup,
+    gameId: row.gameId,
+    charName: row.charName,
+    role: row.role,
+    position: row.position,
+    level: row.level,
+    dc: row.dc,
+    note: row.note,
+    checks: row.checks,
+    checksText: row.checks.map((v,i)=>v ? `${days[Math.floor(i/3)]} ${slots[i%3].full}` : "").filter(Boolean).join("；"),
+    userAgent: navigator.userAgent,
+    site: location.href
+  };
+  try{
+    await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {"Content-Type":"text/plain;charset=utf-8"},
+      body: JSON.stringify(payload)
+    });
+    console.log("已送出到 Google Sheets", payload);
+  }catch(err){
+    console.error("Google Sheets 同步失敗", err);
+    alert("本機已新增，但 Google Sheets 同步失敗。請確認 Apps Script 部署權限是：任何人可存取。")
+  }
+}
+
+function addRow(){let role=roleInput.value;let newRow={group:groupInput.value,subgroup:subgroupInput.value,gameId:gameIdInput.value.trim(),charName:charInput.value.trim(),role,position:positionInput.value,level:levelInput.value.trim(),note:noteInput.value.trim(),dc:dcInput.value,checks:Array(21).fill(0)};rows.push(newRow);["gameIdInput","charInput","levelInput","noteInput"].forEach(id=>document.getElementById(id).value="");render();save();submitNewMemberToSheets(newRow)}
 function removeRow(i){rows.splice(i,1);render();save()}
 function clearAll(){if(confirm("確定清空所有勾選？")){rows.forEach(r=>r.checks=Array(21).fill(0));render();save()}}
 function resetFilters(){["filterGroup","filterSubgroup","filterRole","filterPosition","filterDC","filterDate","filterKeyword"].forEach(id=>document.getElementById(id).value="");render()}
