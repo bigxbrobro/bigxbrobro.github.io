@@ -176,14 +176,48 @@ tr.member-row.dragging{
   font-weight:700;
 }
 
+
+/* week date controls + creator footer */
+.week-panel{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center;
+  background:#ffffff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px;
+  margin-bottom:14px;
+}
+.creator-footer{
+  margin:18px 0 4px;
+  text-align:center;
+  color:#64748b;
+  font-size:13px;
+  font-weight:700;
+}
+.week-panel input{
+  max-width:170px;
+}
+
 </style>
 </head>
 <body>
 <header>
-<h1>龍王開荒團｜6/4－6/10 快速換組固定表頭班表</h1>
-<p>1個大組＝2個小組×6人；同一大組同一時段達 12/12 才標示「可成團」。職業定位含：力職、敏職、敏職(刀)、法職；下方清單小組1/2已用顏色區分；可拖曳成員列調整大組與小組，也可用右側快速換組。時段為早上8–12、下午12–18、晚上18–24。</p>
+<h1>闇黑龍王團班表</h1>
 </header>
 <main>
+
+<section class="week-panel">
+  <b>週期設定：</b>
+  <label>起始日期
+    <input id="weekStartInput" type="date" onchange="previewWeekDates()">
+  </label>
+  <span id="weekPreview" style="color:#64748b;font-size:13px"></span>
+  <button class="secondary" onclick="applyWeekDates()">套用日期</button>
+  <span style="color:#64748b;font-size:13px">會重新命名下方 7 天欄位，勾選資料仍依照第1天～第7天保留。</span>
+</section>
+
 <section class="toolbar">
 <input id="gameIdInput" class="mid" placeholder="遊戲ID">
 <input id="charInput" class="mid" placeholder="角色名稱">
@@ -225,10 +259,11 @@ tr.member-row.dragging{
 <tbody id="tbody"></tbody>
 </table>
 </section>
+<div class="creator-footer">製作者：YT_大哥哥本人</div>
 </main>
 
 <script>
-const days=["6/4 週四","6/5 週五","6/6 週六","6/7 週日","6/8 週一","6/9 週二","6/10 週三"];
+let days=JSON.parse(localStorage.getItem("dragonScheduleWeekDays")||"null")||["6/4 週四","6/5 週五","6/6 週六","6/7 週日","6/8 週一","6/9 週二","6/10 週三"];
 const slots=[{label:"早",full:"早上8點~12點"},{label:"午",full:"下午12點~18點"},{label:"晚",full:"晚上18點~24點"}];
 const roles=["黑騎士","英雄","聖騎士","拳霸","箭神","神射手","夜使者","神槍手","神偷","火毒","冰雷","主教"];
 const positions=["力職","敏職","敏職(刀)","法職"];
@@ -242,54 +277,6 @@ const rolePositionMap={
  "龍騎士":"力職","十字軍":"力職","格鬥家":"力職","弩弓":"敏職","遊俠":"敏職","槍手":"敏職","祭司":"法職"
 };
 const migrate={"龍騎士":"黑騎士","十字軍":"英雄","格鬥家":"拳霸","弩弓":"神射手","遊俠":"箭神","槍手":"神槍手","祭司":"主教"};
-
-// Google Sheets 同步設定：只同步「新增成員」，不處理刪除/拖曳/勾選。
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxszv8rUaTlxn_2nbWI6PLVVa0N1MKx18fmbTayIFU5yfnAXVWUZGskn8KVf9W2I-vV/exec";
-let remoteLoaded = false;
-
-function loadRowsFromGoogleSheets(){
-  return new Promise((resolve)=>{
-    const callbackName = "gsCallback_" + Date.now();
-    const script = document.createElement("script");
-    window[callbackName] = (payload) => {
-      try {
-        if (payload && Array.isArray(payload.rows) && payload.rows.length) {
-          rows = normalize(payload.rows);
-          localStorage.setItem("dragonScheduleRowsV6", JSON.stringify(rows));
-          remoteLoaded = true;
-          render();
-        }
-      } catch (err) {
-        console.warn("讀取 Google Sheets 失敗：", err);
-      } finally {
-        delete window[callbackName];
-        script.remove();
-        resolve();
-      }
-    };
-    script.onerror = () => {
-      console.warn("Google Sheets JSONP 載入失敗");
-      delete window[callbackName];
-      script.remove();
-      resolve();
-    };
-    script.src = GOOGLE_SCRIPT_URL + "?callback=" + callbackName + "&t=" + Date.now();
-    document.body.appendChild(script);
-  });
-}
-
-async function addRowToGoogleSheets(row){
-  const body = new URLSearchParams();
-  body.append("action", "add");
-  body.append("rowJson", JSON.stringify(row));
-  // Apps Script 跨網域不回傳 CORS 標頭，所以使用 no-cors；資料仍會寫入試算表。
-  await fetch(GOOGLE_SCRIPT_URL, {
-    method: "POST",
-    mode: "no-cors",
-    body
-  });
-}
-
 
 const defaultRows=[
 {group:"A",subgroup:"1",gameId:"",charName:"",role:"黑騎士",position:"力職",level:166,note:"W4優先，不方便的話W5也行",dc:"否",checks:[1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
@@ -322,8 +309,7 @@ function init(){
  filterRole.innerHTML='<option value="">全部職業</option>'+opts(roles);
  filterPosition.innerHTML='<option value="">全部職業定位</option>'+opts(positions);
  filterDate.innerHTML='<option value="">全部日期</option>'+days.map((d,i)=>`<option value="${i}">${d} 有勾選</option>`).join("");
- syncPositionInput(); render();
- loadRowsFromGoogleSheets();
+ syncPositionInput(); initWeekControls(); render();
 }
 function syncPositionInput(){positionInput.value=rolePositionMap[roleInput.value]||"力職"}
 function buildHead(){
@@ -450,21 +436,7 @@ function posClass(p){return p==="敏職(刀)"?"pos-敏職刀":"pos-"+p}
 function edit(i,f,v){rows[i][f]=String(v).trim();save()}
 function editRole(i,role){rows[i].role=role;rows[i].position=rolePositionMap[role]||"力職";save();render()}
 function toggle(i,j,v){rows[i].checks[j]=v?1:0;save()}
-async function addRow(){
- let role=roleInput.value;
- const newRow={group:groupInput.value,subgroup:subgroupInput.value,gameId:gameIdInput.value.trim(),charName:charInput.value.trim(),role,position:positionInput.value,level:levelInput.value.trim(),note:noteInput.value.trim(),dc:dcInput.value,checks:Array(21).fill(0)};
- try{
-   await addRowToGoogleSheets(newRow);
-   rows.push(newRow);
-   localStorage.setItem("dragonScheduleRowsV6",JSON.stringify(rows));
-   ["gameIdInput","charInput","levelInput","noteInput"].forEach(id=>document.getElementById(id).value="");
-   render();
-   alert("已新增，並送到 Google Sheets。其他人重新整理後會看到。");
- }catch(err){
-   console.error(err);
-   alert("新增失敗：請檢查 Apps Script 部署權限是否為『任何人』。");
- }
-}
+function addRow(){let role=roleInput.value;rows.push({group:groupInput.value,subgroup:subgroupInput.value,gameId:gameIdInput.value.trim(),charName:charInput.value.trim(),role,position:positionInput.value,level:levelInput.value.trim(),note:noteInput.value.trim(),dc:dcInput.value,checks:Array(21).fill(0)});["gameIdInput","charInput","levelInput","noteInput"].forEach(id=>document.getElementById(id).value="");render();save()}
 function removeRow(i){rows.splice(i,1);render();save()}
 function clearAll(){if(confirm("確定清空所有勾選？")){rows.forEach(r=>r.checks=Array(21).fill(0));render();save()}}
 function resetFilters(){["filterGroup","filterSubgroup","filterRole","filterPosition","filterDC","filterDate","filterKeyword"].forEach(id=>document.getElementById(id).value="");render()}
@@ -524,6 +496,47 @@ function addDropEvents(el, group, subgroup){
     save();
     render();
   });
+}
+
+
+const zhWeekdays=["週日","週一","週二","週三","週四","週五","週六"];
+function formatScheduleDate(date){
+  return `${date.getMonth()+1}/${date.getDate()} ${zhWeekdays[date.getDay()]}`;
+}
+function buildWeekFromStart(startValue){
+  if(!startValue) return days;
+  const base = new Date(startValue + "T00:00:00");
+  return Array.from({length:7},(_,i)=>{
+    const d = new Date(base);
+    d.setDate(base.getDate()+i);
+    return formatScheduleDate(d);
+  });
+}
+function previewWeekDates(){
+  const input = document.getElementById("weekStartInput");
+  const preview = document.getElementById("weekPreview");
+  if(!input || !preview) return;
+  const newDays = buildWeekFromStart(input.value);
+  preview.textContent = newDays.join("｜");
+}
+function applyWeekDates(){
+  const input = document.getElementById("weekStartInput");
+  if(!input || !input.value){
+    alert("請先選擇起始日期");
+    return;
+  }
+  days = buildWeekFromStart(input.value);
+  localStorage.setItem("dragonScheduleWeekDays", JSON.stringify(days));
+  localStorage.setItem("dragonScheduleWeekStart", input.value);
+  previewWeekDates();
+  render();
+}
+function initWeekControls(){
+  const input = document.getElementById("weekStartInput");
+  if(!input) return;
+  const saved = localStorage.getItem("dragonScheduleWeekStart");
+  if(saved) input.value = saved;
+  previewWeekDates();
 }
 
 function exportCSV(){
