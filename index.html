@@ -228,7 +228,6 @@ tr.member-row.dragging{
 </main>
 
 <script>
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx9jkTknQHAQN0Y3wJA1QY-HlADjfet0Gwh8-ggH7m3Mdf1eYNLjGXxBBTkIPJ7nm9-/exec";
 const days=["6/4 週四","6/5 週五","6/6 週六","6/7 週日","6/8 週一","6/9 週二","6/10 週三"];
 const slots=[{label:"早",full:"早上8點~12點"},{label:"午",full:"下午12點~18點"},{label:"晚",full:"晚上18點~24點"}];
 const roles=["黑騎士","英雄","聖騎士","拳霸","箭神","神射手","夜使者","神槍手","神偷","火毒","冰雷","主教"];
@@ -243,6 +242,54 @@ const rolePositionMap={
  "龍騎士":"力職","十字軍":"力職","格鬥家":"力職","弩弓":"敏職","遊俠":"敏職","槍手":"敏職","祭司":"法職"
 };
 const migrate={"龍騎士":"黑騎士","十字軍":"英雄","格鬥家":"拳霸","弩弓":"神射手","遊俠":"箭神","槍手":"神槍手","祭司":"主教"};
+
+// Google Sheets 同步設定：只同步「新增成員」，不處理刪除/拖曳/勾選。
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxszv8rUaTlxn_2nbWI6PLVVa0N1MKx18fmbTayIFU5yfnAXVWUZGskn8KVf9W2I-vV/exec";
+let remoteLoaded = false;
+
+function loadRowsFromGoogleSheets(){
+  return new Promise((resolve)=>{
+    const callbackName = "gsCallback_" + Date.now();
+    const script = document.createElement("script");
+    window[callbackName] = (payload) => {
+      try {
+        if (payload && Array.isArray(payload.rows) && payload.rows.length) {
+          rows = normalize(payload.rows);
+          localStorage.setItem("dragonScheduleRowsV6", JSON.stringify(rows));
+          remoteLoaded = true;
+          render();
+        }
+      } catch (err) {
+        console.warn("讀取 Google Sheets 失敗：", err);
+      } finally {
+        delete window[callbackName];
+        script.remove();
+        resolve();
+      }
+    };
+    script.onerror = () => {
+      console.warn("Google Sheets JSONP 載入失敗");
+      delete window[callbackName];
+      script.remove();
+      resolve();
+    };
+    script.src = GOOGLE_SCRIPT_URL + "?callback=" + callbackName + "&t=" + Date.now();
+    document.body.appendChild(script);
+  });
+}
+
+async function addRowToGoogleSheets(row){
+  const body = new URLSearchParams();
+  body.append("action", "add");
+  body.append("rowJson", JSON.stringify(row));
+  // Apps Script 跨網域不回傳 CORS 標頭，所以使用 no-cors；資料仍會寫入試算表。
+  await fetch(GOOGLE_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    body
+  });
+}
+
 
 const defaultRows=[
 {group:"A",subgroup:"1",gameId:"",charName:"",role:"黑騎士",position:"力職",level:166,note:"W4優先，不方便的話W5也行",dc:"否",checks:[1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]},
@@ -276,6 +323,7 @@ function init(){
  filterPosition.innerHTML='<option value="">全部職業定位</option>'+opts(positions);
  filterDate.innerHTML='<option value="">全部日期</option>'+days.map((d,i)=>`<option value="${i}">${d} 有勾選</option>`).join("");
  syncPositionInput(); render();
+ loadRowsFromGoogleSheets();
 }
 function syncPositionInput(){positionInput.value=rolePositionMap[roleInput.value]||"力職"}
 function buildHead(){
@@ -402,39 +450,21 @@ function posClass(p){return p==="敏職(刀)"?"pos-敏職刀":"pos-"+p}
 function edit(i,f,v){rows[i][f]=String(v).trim();save()}
 function editRole(i,role){rows[i].role=role;rows[i].position=rolePositionMap[role]||"力職";save();render()}
 function toggle(i,j,v){rows[i].checks[j]=v?1:0;save()}
-async function submitNewMemberToSheets(row){
-  if(!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("貼上")) return;
-  const payload = {
-    action: "add_member",
-    group: row.group,
-    subgroup: row.subgroup,
-    gameId: row.gameId,
-    charName: row.charName,
-    role: row.role,
-    position: row.position,
-    level: row.level,
-    dc: row.dc,
-    note: row.note,
-    checks: row.checks,
-    checksText: row.checks.map((v,i)=>v ? `${days[Math.floor(i/3)]} ${slots[i%3].full}` : "").filter(Boolean).join("；"),
-    userAgent: navigator.userAgent,
-    site: location.href
-  };
-  try{
-    await fetch(GOOGLE_SCRIPT_URL, {
-      method: "POST",
-      mode: "no-cors",
-      headers: {"Content-Type":"text/plain;charset=utf-8"},
-      body: JSON.stringify(payload)
-    });
-    console.log("已送出到 Google Sheets", payload);
-  }catch(err){
-    console.error("Google Sheets 同步失敗", err);
-    alert("本機已新增，但 Google Sheets 同步失敗。請確認 Apps Script 部署權限是：任何人可存取。")
-  }
+async function addRow(){
+ let role=roleInput.value;
+ const newRow={group:groupInput.value,subgroup:subgroupInput.value,gameId:gameIdInput.value.trim(),charName:charInput.value.trim(),role,position:positionInput.value,level:levelInput.value.trim(),note:noteInput.value.trim(),dc:dcInput.value,checks:Array(21).fill(0)};
+ try{
+   await addRowToGoogleSheets(newRow);
+   rows.push(newRow);
+   localStorage.setItem("dragonScheduleRowsV6",JSON.stringify(rows));
+   ["gameIdInput","charInput","levelInput","noteInput"].forEach(id=>document.getElementById(id).value="");
+   render();
+   alert("已新增，並送到 Google Sheets。其他人重新整理後會看到。");
+ }catch(err){
+   console.error(err);
+   alert("新增失敗：請檢查 Apps Script 部署權限是否為『任何人』。");
+ }
 }
-
-function addRow(){let role=roleInput.value;let newRow={group:groupInput.value,subgroup:subgroupInput.value,gameId:gameIdInput.value.trim(),charName:charInput.value.trim(),role,position:positionInput.value,level:levelInput.value.trim(),note:noteInput.value.trim(),dc:dcInput.value,checks:Array(21).fill(0)};rows.push(newRow);["gameIdInput","charInput","levelInput","noteInput"].forEach(id=>document.getElementById(id).value="");render();save();submitNewMemberToSheets(newRow)}
 function removeRow(i){rows.splice(i,1);render();save()}
 function clearAll(){if(confirm("確定清空所有勾選？")){rows.forEach(r=>r.checks=Array(21).fill(0));render();save()}}
 function resetFilters(){["filterGroup","filterSubgroup","filterRole","filterPosition","filterDC","filterDate","filterKeyword"].forEach(id=>document.getElementById(id).value="");render()}
